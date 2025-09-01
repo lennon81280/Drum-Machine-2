@@ -26,20 +26,66 @@ const patternLibrary = [
       snare: [4, 11],
       hihat: [0, 2, 5, 7, 8, 10, 13, 15]
     }
+  },
+  {
+    name: 'Trap Beat',
+    tip: 'Fast hats with booming kicks.',
+    pattern: {
+      kick: [0,4,6,8,12],
+      snare: [4,12],
+      hihat: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    }
+  },
+  {
+    name: 'Reggaeton',
+    tip: 'Dem Bow rhythm for Latin tracks.',
+    pattern: {
+      kick: [0,3,7,10,12],
+      snare: [4,8,12],
+      hihat: [2,6,10,14]
+    }
+  },
+  {
+    name: 'Afrobeat',
+    tip: 'Groovy pattern with off-beat kicks.',
+    pattern: {
+      kick: [0,5,8,13],
+      snare: [4,11],
+      hihat: [0,2,4,6,8,10,12,14]
+    }
+  },
+  {
+    name: 'Bossa Nova',
+    tip: 'Latin jazz style with syncopation.',
+    pattern: {
+      kick: [0,7,12],
+      snare: [4,10,15],
+      hihat: [2,6,10,14]
+    }
   }
 ];
 
 const sequencerEl = document.getElementById('sequencer');
-const patternSelect = document.getElementById('patternSelect');
+const libraryEl = document.getElementById('patternLibrary');
 const tipEl = document.getElementById('tip');
 const savedList = document.getElementById('savedPatterns');
 
-function initSelect(){
+function renderLibrary(){
+  libraryEl.innerHTML='';
   patternLibrary.forEach(p=>{
-    const opt = document.createElement('option');
-    opt.value = p.name;
-    opt.textContent = p.name;
-    patternSelect.appendChild(opt);
+    const item=document.createElement('div');
+    item.className='library-item';
+    const load=document.createElement('button');
+    load.textContent='Load';
+    load.addEventListener('click',()=>loadPattern(p));
+    const name=document.createElement('strong');
+    name.textContent=p.name;
+    const tip=document.createElement('span');
+    tip.textContent=p.tip;
+    item.appendChild(load);
+    item.appendChild(name);
+    item.appendChild(tip);
+    libraryEl.appendChild(item);
   });
   showTip(patternLibrary[0]);
 }
@@ -86,7 +132,7 @@ function getCurrentPattern(){
 }
 
 function showTip(p){
-  tipEl.textContent = `${p.name}: ${p.tip}`;
+  tipEl.textContent = p.tip ? `${p.name}: ${p.tip}` : p.name;
 }
 
 function saveCurrent(){
@@ -107,7 +153,16 @@ function renderSaved(){
     const btn = document.createElement('button');
     btn.textContent=p.name;
     btn.addEventListener('click',()=>loadPattern(p));
+    const del = document.createElement('button');
+    del.textContent='X';
+    del.className='delete';
+    del.addEventListener('click',()=>{
+      stored.splice(idx,1);
+      localStorage.setItem('saved', JSON.stringify(stored));
+      renderSaved();
+    });
     li.appendChild(btn);
+    li.appendChild(del);
     savedList.appendChild(li);
   });
 }
@@ -138,19 +193,18 @@ Tone.Transport.scheduleRepeat(time=>{
   Tone.Transport.start();
 });
 
- document.getElementById('stop').addEventListener('click', ()=>{
+document.getElementById('stop').addEventListener('click', ()=>{
   Tone.Transport.stop();
 });
 
- document.getElementById('loadPattern').addEventListener('click', ()=>{
-  const name = patternSelect.value;
-  const p = patternLibrary.find(pl=>pl.name===name);
-  if(p) loadPattern(p);
+document.getElementById('randomPattern').addEventListener('click', ()=>{
+  const p = patternLibrary[Math.floor(Math.random()*patternLibrary.length)];
+  loadPattern(p);
 });
 
 document.getElementById('savePattern').addEventListener('click', saveCurrent);
 
 // Init
-initSelect();
+renderLibrary();
 initSequencer();
 renderSaved();
