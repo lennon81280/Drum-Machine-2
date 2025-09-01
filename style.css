@@ -1,0 +1,19 @@
+body {
+  font-family: system-ui, sans-serif;
+  background:#fdfdfd;
+  color:#222;
+  margin:0; padding:2rem;
+  display:flex; justify-content:center;
+}
+main{max-width:800px;width:100%;}
+h1{text-align:center;}
+#sequencer{margin-top:1rem;}
+.row{display:grid;grid-template-columns:repeat(16,1fr);gap:2px;margin-bottom:4px;}
+.step{width:40px;height:40px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.step.active{background:#333;color:#fff;}
+.controls{margin-top:1rem;text-align:center;}
+button{padding:0.5rem 1rem;margin:0.25rem;border:none;background:#333;color:#fff;cursor:pointer;}
+button:hover{background:#555;}
+section{margin-bottom:2rem;}
+#savedPatterns{list-style:none;padding:0;}
+#savedPatterns li{margin:0.25rem 0;}
